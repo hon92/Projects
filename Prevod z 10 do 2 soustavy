@@ -1,0 +1,59 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{  
+	int size=1;
+	int *bin=new int[size];
+	int cislo;
+	cin >>cislo;
+
+	if (cin.fail() || cislo<0)
+	{
+		cout<<"error"<<endl;
+		delete []bin;
+		return 0;
+	}
+		
+	int tmp;
+	int i=0;
+	int pocet=0;
+
+	while(cislo!=0)
+	{
+
+		tmp=cislo%2;
+
+		if (tmp==1)
+		{
+			bin[i]=1;
+		}
+		else 
+			bin[i]=0;
+		i++;
+		cislo=cislo/2;
+		pocet=i;
+
+		if(pocet>=size)
+		{
+			int old=size;
+			size*=2;
+			
+
+			int *bigbinary=new int [size];
+			for (int i=0;i<old;i++)
+				bigbinary[i]=bin[i];
+
+				delete[]bin;
+
+				bin=bigbinary;
+
+		}
+	}
+	
+	for (int i=pocet-1;i>=0;i--)
+		cout<<bin[i]<<" ";
+
+	delete[]bin;
+	return 0;
+}
