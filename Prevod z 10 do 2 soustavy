@@ -4,13 +4,26 @@ using namespace std;
 int main()
 {  
 	int size=1;
-	int *bin=new int[size];
 	int cislo;
+	int soustava;
+	char *bin=new char[size];
+	
+	cout<<"Zadej cislo pro prevod: ";
 	cin >>cislo;
+	cout<<endl;
+	cout<<"Zadej do jake soustavy chces cislo prevest (0 - 16): "<<endl;
+	cin>>soustava;
+
+	if(cin.fail() || soustava<1 ||soustava>16)
+	{
+		cout<<"Chyba - Zadana soustava musi byt v rozmezi 0 - 16"<<endl;
+		delete []bin;
+		return 0;
+	}
 
 	if (cin.fail() || cislo<0)
 	{
-		cout<<"error"<<endl;
+		cout<<"Chyba - Musis zadat cislo, ktere bude vetsi nez 0"<<endl;
 		delete []bin;
 		return 0;
 	}
@@ -22,38 +35,68 @@ int main()
 	while(cislo!=0)
 	{
 
-		tmp=cislo%2;
+		tmp=cislo%soustava;
 
-		if (tmp==1)
+		if(tmp>=10)
 		{
-			bin[i]=1;
+			int x=tmp;
+			switch(x)
+			{
+			case 10:
+				bin[i]='A';				
+				break;
+			case 11:
+				bin[i]='B';	
+				break;
+			case 12:
+				bin[i]='C';	
+				break;
+			case 13:
+				bin[i]='D';	
+				break;
+			case 14:
+				bin[i]='E';	
+				break;
+			case 15:
+				bin[i]='F';	
+				break;
+			}
+
 		}
-		else 
-			bin[i]=0;
+		
+		else if (tmp!=0 && tmp<10)
+		{
+			char *z=new char;
+			itoa(tmp,z,8);
+			bin[i]=*z;
+		}
+		else
+		{
+			bin[i]='0';
+		}
+			
 		i++;
-		cislo=cislo/2;
+		cislo=cislo/soustava;
 		pocet=i;
 
 		if(pocet>=size)
 		{
 			int old=size;
 			size*=2;
-			
-
-			int *bigbinary=new int [size];
+			char *bigbinary=new char [size];
 			for (int i=0;i<old;i++)
 				bigbinary[i]=bin[i];
-
 				delete[]bin;
-
 				bin=bigbinary;
-
 		}
 	}
-	
+	cout<<endl;
+	cout<<"Cislo prevedene do "<<soustava<<" je: ";
 	for (int i=pocet-1;i>=0;i--)
 		cout<<bin[i]<<" ";
-
+	cout<<endl<<endl;
+	
+	
 	delete[]bin;
 	return 0;
 }
