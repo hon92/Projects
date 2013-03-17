@@ -1,0 +1,243 @@
+#include <iostream>
+using namespace std;
+//#include <vld.h>
+
+
+
+class Prevod
+{
+public:
+
+  Prevod();
+	Prevod(int cislo, int soustava);
+	~Prevod();
+	void CiselnyPrevod();
+	void Vypis();
+	char * Realloc(char *pole,int old, int max);
+	void NastavCislo(int cislo);
+	void NastavSoustavu(int soustava);
+	bool Kontrola();
+	int ZiskejCislo()const;
+	int ZiskejSoustavu()const;
+
+private:
+
+	char * bin;
+	int size;
+	int soustava;
+	int cislo;
+	int pocet;
+	int originalcislo;
+
+};
+
+Prevod::Prevod()
+{
+	this->size=1;
+	bin=new char [size];
+	pocet=0;
+	this->cislo=0;
+	this->soustava=0;
+	this->originalcislo=0;
+}
+Prevod::Prevod(int cislo, int soustava)
+{
+	this->size=1;
+	this->cislo=cislo;
+	this->soustava=soustava;
+	bin=new char [size];
+	pocet=0;
+	this->originalcislo=cislo;
+}
+Prevod::~Prevod()
+{
+
+	delete []bin;
+
+}
+void Prevod::CiselnyPrevod()
+{
+	int tmp;
+	int i=0;
+
+	if(ZiskejCislo()!=0 && ZiskejSoustavu()!=0)
+	{
+
+		while(cislo!=0)
+		{
+
+			tmp=cislo%soustava;
+
+			if(tmp>=10)
+			{
+				int x=tmp;
+				switch(x)
+				{
+				case 10:
+					bin[i]='A';				
+					break;
+				case 11:
+					bin[i]='B';	
+					break;
+				case 12:
+					bin[i]='C';	
+					break;
+				case 13:
+					bin[i]='D';	
+					break;
+				case 14:
+					bin[i]='E';	
+					break;
+				case 15:
+					bin[i]='F';	
+					break;
+				}
+
+			}
+
+			else if (tmp!=0 && tmp<10)
+			{
+				switch(tmp)
+				{
+				case 1:
+					tmp='1';
+					break;
+				case 2:
+					tmp='2';
+					break;
+				case 3:
+					tmp='3';
+					break;
+				case 4:
+					tmp='4';
+					break;
+				case 5:
+					tmp='5';
+					break;
+				case 6:
+					tmp='6';
+					break;
+				case 7:
+					tmp='7';
+					break;
+				case 8:
+					tmp='8';
+					break;
+				case 9:
+					tmp='9';
+					break;
+
+				}
+
+				bin[i]=tmp;
+			}
+			else
+			{
+				bin[i]='0';
+			}
+
+
+			i++;
+			cislo=cislo/soustava;
+			pocet=i;
+
+			if(pocet>=size)
+			{
+				int old=size;
+				size*=2;
+				bin=Realloc(bin,old,size);
+			}
+		}
+
+	}
+
+}
+char * Prevod::Realloc(char *bin,int old, int max)
+{
+	char *bigbinary=new char [max];
+	for (int i=0;i<old;i++)
+		bigbinary[i]=bin[i];
+	delete[]bin;
+	return bigbinary;
+}
+void Prevod::Vypis()
+{
+
+	if(this->originalcislo!=0 && ZiskejSoustavu()!=0)
+	{
+
+		cout<<endl;
+		cout<<"Cislo prevedene do "<<soustava<<" je: ";
+		for (int i=pocet-1;i>=0;i--)
+		{
+			cout<<bin[i]<<" ";
+		}
+		cout<<endl;
+		cout<<endl;
+	}
+	else 
+	{	cout<<endl;
+	cout<<"Cislo se nepodarilo prevest"<<endl;
+	cout<<endl;
+	}
+
+}
+
+void Prevod::NastavCislo(int cislo)
+{
+	if(cin.fail() || cislo<=0)
+	{
+		cout<<"Chyba - Musis zadat cislo, ktere bude vetsi nez 0"<<endl;
+		this->cislo=0;
+	}
+	else
+	{
+		this->cislo=cislo;
+		this->originalcislo=cislo;
+	}
+
+}
+void Prevod::NastavSoustavu(int soustava)
+{
+	if(cin.fail() || soustava<=1 || soustava>16)
+	{
+		cout<<"Chyba - Zadana soustava musi byt v rozmezi 2 - 16"<<endl;
+		this->soustava=0;
+	}
+	else
+	{
+		this->soustava=soustava;
+	}
+}
+
+int Prevod::ZiskejCislo()const
+{
+	return cislo;
+}
+int Prevod::ZiskejSoustavu()const
+{
+	return soustava;
+}
+
+int main()
+{  
+
+	int cislo=0;
+	int soustava=0;
+
+	cout<<"Zadej cislo pro prevod: ";
+	cin >>cislo;
+	cout<<endl;
+	cout<<"Zadej do jake soustavy chces cislo prevest (2 - 16): ";
+	cin>>soustava;
+
+	Prevod Cislo;
+	Cislo.NastavCislo(cislo);
+	Cislo.NastavSoustavu(soustava);
+
+	Cislo.CiselnyPrevod();
+	Cislo.Vypis();
+
+
+	return 0;
+}
