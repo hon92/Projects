@@ -13,7 +13,6 @@ public:
 	~Prevod();
 	void CiselnyPrevod();
 	void Vypis();
-	char * Realloc(char *pole,int old, int max);
 	void NastavCislo(int cislo);
 	void NastavSoustavu(int soustava);
 	bool Kontrola();
@@ -21,7 +20,7 @@ public:
 	int ZiskejSoustavu()const;
 
 private:
-
+	char * Realloc(char *pole,int old, int max);
 	char * bin;
 	int size;
 	int soustava;
