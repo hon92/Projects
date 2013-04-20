@@ -1,0 +1,364 @@
+#include <iostream>
+#include <string>
+#include <bitset>
+using namespace std;
+#include <vld.h>
+
+typedef unsigned long long int big_number;
+
+class Prevod
+{
+public:
+  Prevod();
+	Prevod(int cislo, int soustava);
+	~Prevod();
+	void PrevodDECnaX();
+	void Vypis();
+	void NastavCislo(int cislo);
+	void NastavSoustavu(int soustava);
+	int ZiskejCislo()const;
+	int ZiskejSoustavu()const;
+	int PrevestDo10(string);
+	big_number PrevodXnaDEC(string,double);
+private:
+	char * Realloc(char *pole,int old, int max);
+	char * bin;
+	int size;
+	int soustava;
+	int cislo;
+	int pocet;
+	int originalcislo;
+	int *pole;
+
+};
+
+Prevod::Prevod()
+{
+	this->size=1;
+	bin=new char [size];
+	pocet=0;
+	this->cislo=0;
+	this->soustava=0;
+	this->originalcislo=0;
+	pole=NULL;
+}
+Prevod::Prevod(int cislo, int soustava)
+{
+	this->size=1;
+	this->cislo=cislo;
+	this->soustava=soustava;
+	bin=new char [size];
+	pocet=0;
+	this->originalcislo=cislo;
+}
+Prevod::~Prevod()
+{
+	delete []bin;
+	delete []pole;
+}
+void Prevod::PrevodDECnaX()	
+{
+	int tmp;
+	int i=0;
+
+	if(ZiskejCislo()!=0 && ZiskejSoustavu()!=0)
+	{
+		while(cislo!=0)
+		{
+			tmp=cislo%soustava;
+
+			if(tmp>=10)
+			{
+				int x=tmp;
+				switch(x)
+				{
+				case 10:
+					bin[i]='A';				
+					break;
+				case 11:
+					bin[i]='B';	
+					break;
+				case 12:
+					bin[i]='C';	
+					break;
+				case 13:
+					bin[i]='D';	
+					break;
+				case 14:
+					bin[i]='E';	
+					break;
+				case 15:
+					bin[i]='F';	
+					break;
+				}
+
+			}
+
+			else if (tmp!=0 && tmp<10)
+			{
+				switch(tmp)
+				{
+				case 1:
+					tmp='1';
+					break;
+				case 2:
+					tmp='2';
+					break;
+				case 3:
+					tmp='3';
+					break;
+				case 4:
+					tmp='4';
+					break;
+				case 5:
+					tmp='5';
+					break;
+				case 6:
+					tmp='6';
+					break;
+				case 7:
+					tmp='7';
+					break;
+				case 8:
+					tmp='8';
+					break;
+				case 9:
+					tmp='9';
+					break;
+
+				}
+
+				bin[i]=tmp;
+			}
+			else
+			{
+				bin[i]='0';
+			}
+			i++;
+			cislo=cislo/soustava;
+			pocet=i;
+
+			if(pocet>=size)
+			{
+				int old=size;
+				size*=2;
+				bin=Realloc(bin,old,size);
+			}
+		}
+
+	}
+
+}
+char * Prevod::Realloc(char *bin,int old, int max)
+{
+	char *bigbinary=new char [max];
+	for (int i=0;i<old;i++)
+		bigbinary[i]=bin[i];
+	delete[]bin;
+	return bigbinary;
+}
+void Prevod::Vypis()
+{
+
+	if(this->originalcislo!=0 && ZiskejSoustavu()!=0)
+	{
+
+		cout<<endl;
+		cout<<"Cislo prevedene do "<<soustava<<" je: ( ";
+		for (int i=pocet-1;i>=0;i--)
+		{
+			cout<<bin[i]<<" ";
+		}
+		cout<<")";
+
+	}
+	else 
+	{	cout<<endl;
+	cout<<"Cislo se nepodarilo prevest"<<endl;
+	cout<<endl;
+	}
+
+}
+int Prevod::PrevestDo10(string x)			//z 2 do 10
+{
+	int cislo=bitset<16>(x).to_ulong();
+	return cislo;
+}
+void Prevod::NastavCislo(int cislo)
+{
+	if(cin.fail() || cislo<=0)
+	{
+		cout<<"Chyba - Musis zadat cislo, ktere bude vetsi nez 0"<<endl;
+		this->cislo=0;
+	}
+	else
+	{
+		this->cislo=cislo;
+		this->originalcislo=cislo;
+	}
+
+}
+void Prevod::NastavSoustavu(int soustava)
+{
+	if(cin.fail() || soustava<=1 || soustava>16)
+	{
+		cout<<"Chyba - Zadana soustava musi byt v rozmezi 2 - 16"<<endl;
+		this->soustava=0;
+	}
+	else
+	{
+		this->soustava=soustava;
+	}
+}
+big_number Prevod::PrevodXnaDEC(string hex,double soustava)
+{
+
+	pole=new int [hex.length()];
+
+
+	for(int i=0;i<hex.length();i++)
+	{
+		switch(hex[i])
+		{
+		case '0':
+			pole[i]=0;
+			break;
+		case '1':
+			pole[i]=1;
+			break;
+		case '2':
+			pole[i]=2;
+			break;
+		case '3':
+			pole[i]=3;
+			break;
+		case '4':
+			pole[i]=4;
+			break;
+		case '5':
+			pole[i]=5;
+			break;
+		case '6':
+			pole[i]=6;
+			break;
+		case '7':
+			pole[i]=7;
+			break;
+		case '8':
+			pole[i]=8;
+			break;
+		case '9':
+			pole[i]=9;
+			break;
+		case 'A':
+			pole[i]=10;
+			break;
+		case 'B':
+			pole[i]=11;
+			break;
+		case 'C':
+			pole[i]=12;
+			break;
+		case 'D':
+			pole[i]=13;
+			break;
+		case 'E':
+			pole[i]=14;
+			break;
+		case 'F':
+			pole[i]=15;
+			break;
+		default:
+			cout<<"Spatne zadani cisla"<<endl;
+			return 0;
+		}
+	}
+
+	for(int i=hex.length()-1;i>=0;i--)
+	{
+		if(pole[i]>=soustava)
+		{
+			cout<<"Spatne zadani cisla"<<endl;
+			return 0;
+		}
+	}
+
+	unsigned long long int cislo=0;
+
+	for(int i=hex.length()-1,j=0;i>=0;i--,j++)
+	{
+		cislo+=pole[i] * pow(soustava,j);
+	}
+	return cislo;
+}
+int Prevod::ZiskejCislo()const
+{
+	return cislo;
+}
+int Prevod::ZiskejSoustavu()const
+{
+	return soustava;
+}
+void Menu();
+int main()
+{  
+	Menu();
+	return 0;
+}
+
+void Menu()
+{
+	int cislo=0;
+	int soustava=0;
+	int volba;
+	double s;
+	string hexacislo;
+	Prevod Cislo;
+
+	cout<<"1. Prevod z 10 do X soustavy"<<endl;
+	cout<<"2. Prevod z X do DEC"<<endl;
+	cout<<"3. Exit"<<endl;
+	cout<<"Vyber: ";
+	cin>>volba;
+
+	switch(volba)
+	{
+	case 1:
+		cout<<"Zadej cislo pro prevod: ";
+		cin >>cislo;
+		if(cin.fail())
+		{
+			cout<<"Spatne zadani"<<endl;
+			return;
+		}
+		cout<<"Zadej do jake soustavy chces cislo prevest (2 - 16): ";
+		cin>>soustava;
+		Cislo.NastavCislo(cislo);
+		Cislo.NastavSoustavu(soustava);
+		Cislo.PrevodDECnaX();
+		Cislo.Vypis();
+		cout<<endl;
+		Menu();
+		break;
+	case 2:
+		cout<<"Zadej z jake soustavy chces cislo prevest (2 - 16): ";
+		cin>>s;
+
+		if(s>16 || s<2)
+		{
+			cout<<"Spatne zadani soustavy"<<endl;
+			return;
+		}
+		cout<<"Zadej cislo pro prevod: ";
+		cin>>hexacislo;
+		cout<<"Cislo prevedene do "<<10<<" je: ( "<<Cislo.PrevodXnaDEC(hexacislo,s)<<" )"<<endl;
+		cout<<endl;
+		Menu();
+		break;
+	case 3:
+		return;
+	default:
+		Menu();
+	}
+
+}
