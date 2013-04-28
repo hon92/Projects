@@ -1,0 +1,86 @@
+#include <iostream>
+//#include <vld.h>
+using namespace std;
+
+struct uzel
+{
+  int cislo;
+	uzel * next;
+};
+class seznam
+{
+public:
+	seznam();
+	~seznam();
+	void add(int);
+	void print();
+
+private:
+	void memory();
+	uzel *root;
+
+
+};
+seznam::seznam()
+{
+	root=NULL;
+}
+seznam::~seznam()
+{
+	memory();
+}
+void seznam::add(int x)
+{
+	uzel * novy=new uzel;
+	novy->cislo=x;
+	novy->next=NULL;
+
+	if(root==NULL)
+	{
+		root=novy;
+
+	}
+	else
+	{
+		uzel * tmp;
+		tmp=root;
+		while(tmp->next!=NULL)
+		{
+			tmp=tmp->next;
+		}
+		tmp->next=novy;
+	}
+}
+void seznam::print()
+ {
+	 uzel *tmp=root;
+	while(tmp!=NULL)
+	{
+		cout<<tmp->cislo<<endl;
+		tmp=tmp->next;
+	}
+}
+void seznam::memory()
+{
+	uzel *tmp=root;
+	uzel *x=root;
+	while(tmp!=NULL && tmp->next!=NULL)
+	{
+		tmp=tmp->next;
+		delete x;
+		x=tmp;
+	}
+	if(x!=NULL)
+		delete x;
+}
+int main()
+{
+	seznam list;
+	list.add(5);
+	list.add(2);
+	list.add(1);
+	list.add(8);
+
+	list.print();
+	return 0;
+}
